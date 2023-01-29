@@ -1,14 +1,27 @@
 Notes:
 
-For lamda fuctions execution role:
- 1) add S3FullAccess
+1. For lamda fuctions execution role:
+  a. add S3FullAccess
 
-For step fuctions execution role:
- 2) add LamdaFullAccess
+2. For step fuctions execution role:
+  b. add LamdaFullAccess
  
-How to install dependencies and upload them to S3 bucket from terminal:
+3. How to install dependencies and upload them to S3 bucket from terminal:
   mkdir python
   pip install --target ./python sagemaker
   sudo yum install zip
   zip -r sagemaker.zip ./python
   aws s3 cp ./sagemaker.zip s3://{YOUR_BUCKET_NAME}/
+
+4. How to reload your trained model artifact from S3 without re-running the training from scratch:
+
+import sagemaker
+from sagemaker.model import Model
+from sagemaker import image_uris
+import boto3
+
+algo_image = sagemaker.image_uris.retrieve(framework='image-classification',region=region) 
+
+img_classifier_model = Model(
+    image_uri=algo_image,  model_data="s3://{bucket}/{prefix}/model.tar.gz", 
+    role=role)
